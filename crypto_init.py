@@ -11,7 +11,7 @@ pubdir = keysdir + "/public"
 pvtdir = keysdir + "/private"
 pubkey = pubdir + "/mypub.pem"
 pvtkey = pvtdir + "/mypvt.pem"
-srvkey = pubdir + "/srvpuv.pem"
+srvkey = pubdir + "/srvpub.pem"
 
 public_key = ""
 private_key = ""
