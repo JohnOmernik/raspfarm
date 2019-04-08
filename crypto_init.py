@@ -53,7 +53,7 @@ def loadkeys():
         with open(pubkey, 'wb') as f:
             f.write(my_public_pem)
         f.close()
-    elif os.path.exists(pvtkey) and os.path.exists(publey):
+    elif os.path.exists(pvtkey) and os.path.exists(pubkey):
         with open(pvtkey, "rb") as key_file:
             my_private_key = serialization.load_pem_private_key(key_file.read(),password=None,backend=default_backend())
         with open(pubkey, "rb") as key_file:
