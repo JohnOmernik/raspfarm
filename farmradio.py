@@ -36,8 +36,8 @@ class FarmRadio:
         self.rfm9x.tx_power = self.RADIO_TX_PWR
 
     # check for packet rx
-    def recv_raw(self):
-        packet = self.rfm9x.receive()
+    def recv_raw(self, mytimeout=0.5):
+        packet = self.rfm9x.receive(timeout=mytimeout)
         if packet is not None:
             self.prev_packet = packet
             packet_text = str(self.prev_packet, "utf-8")

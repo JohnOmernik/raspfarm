@@ -13,7 +13,7 @@ def main():
 
     while True:
         try:
-            raw_data = fr.recv_raw()
+            raw_data = fr.recv_raw(5.0)
             if raw_data is not None:
                 print("Data: %s" % raw_data)
                 time.sleep(0.5)
