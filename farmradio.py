@@ -1,14 +1,8 @@
 #!/usr/bin/python3
-"""
-Example for using the RFM9x Radio with Raspberry Pi.
-
-Learn Guide: https://learn.adafruit.com/lora-and-lorawan-for-raspberry-pi
-Author: Brent Rubell for Adafruit Industries
-"""
-
 # Import Python System Libraries
 import time
 import sys
+import socket
 # Import Blinka Libraries
 import busio
 from digitalio import DigitalInOut, Direction, Pull
@@ -19,88 +13,50 @@ import adafruit_ssd1306
 import adafruit_rfm9x
 
 
-RADIO_FREQ_MHZ = 915.0
-RADIO_TX_PWR = 23   # The default RADIO_TX_PWR is 13, 23 is the max
-RADIO_BAUD_RATE = 50000000 # 50000000 is the default
+def main():
+    print ("Radio Testing")
 
-# Button A
-btnA = DigitalInOut(board.D5)
-btnA.direction = Direction.INPUT
-btnA.pull = Pull.UP
-
-# Button B
-btnB = DigitalInOut(board.D6)
-btnB.direction = Direction.INPUT
-btnB.pull = Pull.UP
-
-# Button C
-btnC = DigitalInOut(board.D12)
-btnC.direction = Direction.INPUT
-btnC.pull = Pull.UP
-
-# Create the I2C interface.
-i2c = busio.I2C(board.SCL, board.SDA)
-
-# 128x32 OLED Display
-display = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, addr=0x3c)
-# Clear the display.
-display.fill(0)
-display.show()
-width = display.width
-height = display.height
-
-# Configure LoRa Radio
-CS = DigitalInOut(board.CE1)
-RESET = DigitalInOut(board.D25)
-spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RADIO_FREQ_MHZ, baudrate=RADIO_BAUD_RATE)
-
-rfm9x.tx_power = RADIO_TX_PWR
-prev_packet = None
-
-while True:
-    packet = None
-    # draw a box to clear the image
-    display.fill(0)
-    display.text('RasPi LoRa', 35, 0, 1)
+class FarmRadio:
+    
+    RADIO_FREQ_MHZ = 915.0
+    RADIO_TX_PWR = 23   # The default RADIO_TX_PWR is 13, 23 is the max
+    RADIO_BAUD_RATE = 50000000 # 50000000 is the default
+    spi = None
+    rfm9x = None
+    prev_packet = None
+    myname = None
+    def __init__(self):
+        # Configure LoRa Radio
+        print("Init - Radio")
+        self.myname = socket.gethostname()
+        CS = DigitalInOut(board.CE1)
+        RESET = DigitalInOut(board.D25)
+        self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, CS, RESET, self.RADIO_FREQ_MHZ, baudrate=self.RADIO_BAUD_RATE)
+        self.rfm9x.tx_power = self.RADIO_TX_PWR
 
     # check for packet rx
-    try:
-        packet = rfm9x.receive()
-        if packet is None:
-            display.show()
-            display.text('- Waiting for PKT -', 15, 20, 1)
+    def recv_raw(self):
+        packet = self.rfm9x.receive()
+        if packet is not None:
+            self.prev_packet = packet
+            packet_text = str(self.prev_packet, "utf-8")
         else:
-        # Display the packet text and rssi
-            display.fill(0)
-            prev_packet = packet
-            packet_text = str(prev_packet, "utf-8")
-            display.text('RX: ', 0, 0, 1)
-            display.text(packet_text, 25, 0, 1)
-            time.sleep(1)
+            packet_text = None
+        return packet_text
 
-        if not btnA.value:
-        # Send Button A
-            display.fill(0)
-            button_a_data = bytes("Button A!","utf-8")
-            rfm9x.send(button_a_data)
-            display.text('Sent Button A!', 25, 15, 1)
-        elif not btnB.value:
-        # Send Button B
-            display.fill(0)
-            button_b_data = bytes("Button B!","utf-8")
-            rfm9x.send(button_b_data)
-            display.text('Sent Button B!', 25, 15, 1)
-        elif not btnC.value:
-        # Send Button C
-            display.fill(0)
-            button_c_data = bytes("Button C!","utf-8")
-            rfm9x.send(button_c_data)
-            display.text('Sent Button C!', 25, 15, 1)
-        display.show()
-        time.sleep(0.1)
-    except KeyboardInterrupt:
-        display.fill(0)
-        display.show()
-        print("Keyboard Exit")
-        sys.exit(0)
+    def send_raw(self, msg):
+        msgtime = int(time.time())
+        fullmsg = "%s~%s~%s" % (msgtime, self.myname, msg)
+        if len(fullmsg) > 250: 
+            print("Message to large: Not sent")
+            return -1
+        else:
+            send_data = bytes(fullmsg, "utf-8")
+            self.rfm9x.send(send_data)
+            return 0
+
+
+if __name__ == "__main__":
+    main()
+
