@@ -19,7 +19,6 @@ def main():
 class FarmRadio:
     RADIO_FREQ_MHZ = 915.0
     RADIO_TX_PWR = 23   # The default RADIO_TX_PWR is 13, 23 is the max
-    RADIO_BAUD_RATE = 50000000 # 50000000 is the default
     spi = None
     rfm9x = None
     prev_packet = None
@@ -36,7 +35,7 @@ class FarmRadio:
         CS = DigitalInOut(board.CE1)
         RESET = DigitalInOut(board.D25)
         self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, CS, RESET, self.RADIO_FREQ_MHZ, baudrate=self.RADIO_BAUD_RATE)
+        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, CS, RESET, self.RADIO_FREQ_MHZ)
         self.rfm9x.tx_power = self.RADIO_TX_PWR
 
     # check for packet rx
