@@ -40,7 +40,7 @@ class FarmRadio:
     # check for packet rx
     def recv_raw(self, mytimeout=0.5):
         packet = self.rfm9x.receive(timeout=mytimeout)
-        rssi = rfm9x.rssi
+        rssi = self.rfm9x.rssi
         if packet is not None:
             self.prev_packet = packet
             try:
