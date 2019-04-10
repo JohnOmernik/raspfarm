@@ -47,6 +47,7 @@ class FarmRadio:
                 packet_text = str(self.prev_packet, "utf-8")
             except:
                 print("Failed Packet Decode - Dropping Packet")
+                packet_text = "Error"
         else:
             packet_text = None
         return packet_text, rssi
