@@ -10,12 +10,13 @@ def main():
     fr = farmradio.FarmRadio()
 
     print("Hello - Testing Radio Sending")
-
     while True:
         if random.randint(1,6) == 1:
-            print("Random Send: %s" % curmsg)
             curmsg = int(time.time())
-            fr.send_raw("Hey, how's it going - %s" % curmsg)
+            for i in range(5):
+                print("Random Send Attempt: %s -  %s" % (i, curmsg))
+                fr.send_raw("Hey, how's it going - Send: %s - %s" % (i,curmsg))
+                time.sleep(0.1)
         time.sleep(1)
 
 

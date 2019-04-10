@@ -17,7 +17,6 @@ def main():
     print ("Radio Testing")
 
 class FarmRadio:
-    
     RADIO_FREQ_MHZ = 915.0
     RADIO_TX_PWR = 23   # The default RADIO_TX_PWR is 13, 23 is the max
     RADIO_BAUD_RATE = 50000000 # 50000000 is the default
@@ -28,6 +27,11 @@ class FarmRadio:
     def __init__(self):
         # Configure LoRa Radio
         print("Init - Radio")
+        print("------------")
+        print("Frequency: %s" % self.RADIO_FREQ_MHZ)
+        print("TX Power: %s" % self.RADIO_TX_PWR)
+        print("Baud Rate: %s" % self.RADIO_BAUD_RATE)
+        print("")
         self.myname = socket.gethostname()
         CS = DigitalInOut(board.CE1)
         RESET = DigitalInOut(board.D25)
