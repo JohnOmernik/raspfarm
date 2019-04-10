@@ -2,3 +2,7 @@ keys
 keys/
 keys/*
 keys/**
+
+*.pyc
+*/*.pyc
+**/*.pyc
