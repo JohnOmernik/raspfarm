@@ -42,7 +42,10 @@ class FarmRadio:
         packet = self.rfm9x.receive(timeout=mytimeout)
         if packet is not None:
             self.prev_packet = packet
-            packet_text = str(self.prev_packet, "utf-8")
+            try:
+                packet_text = str(self.prev_packet, "utf-8")
+            except:
+                print("Failed Packet Decode - Dropping Packet")
         else:
             packet_text = None
         return packet_text
