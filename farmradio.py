@@ -40,6 +40,7 @@ class FarmRadio:
     # check for packet rx
     def recv_raw(self, mytimeout=0.5):
         packet = self.rfm9x.receive(timeout=mytimeout)
+        rssi = rfm9x.rssi
         if packet is not None:
             self.prev_packet = packet
             try:
@@ -48,7 +49,7 @@ class FarmRadio:
                 print("Failed Packet Decode - Dropping Packet")
         else:
             packet_text = None
-        return packet_text
+        return packet_text, rssi
 
     def send_raw(self, msg):
         msgtime = int(time.time())
