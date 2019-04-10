@@ -29,7 +29,6 @@ class FarmRadio:
         print("------------")
         print("Frequency: %s" % self.RADIO_FREQ_MHZ)
         print("TX Power: %s" % self.RADIO_TX_PWR)
-        print("Baud Rate: %s" % self.RADIO_BAUD_RATE)
         print("")
         self.myname = socket.gethostname()
         CS = DigitalInOut(board.CE1)
