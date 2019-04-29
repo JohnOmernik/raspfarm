@@ -89,7 +89,7 @@ class FarmQueue():
                     msgack = msgar[3]
                     msgstr = msgar[4]
                     if msgto == self.myname:
-                        if msgstr.find("ack:"):
+                        if msgstr.find("ack:") >= 0:
                             msghash = msgstr.split(":")[1]
                             if self.debug:
                                 print("Recv ACK for message %s" % msghash)
