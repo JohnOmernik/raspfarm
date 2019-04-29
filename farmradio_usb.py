@@ -76,13 +76,11 @@ class FarmRadio():
 
 
     def send_raw(self, msg):
-        msgtime = int(time.time())
-        fullmsg = "%s~%s~%s" % (msgtime, self.myname, msg)
-        if len(fullmsg) > 250: 
+        if len(msg) > 250: 
             print("Message to large: Not sent")
             return -1
 
-        mymsg = fullmsg.encode("UTF-8")
+        mymsg = msg.encode("UTF-8")
         sendmsg = "radio tx " + "FFFF0000" + mymsg.hex()
         self.send_cmd(sendmsg)
         return 0
