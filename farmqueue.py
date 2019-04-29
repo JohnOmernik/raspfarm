@@ -119,7 +119,7 @@ class FarmQueue():
         if self.debug:
             print("Sending msgack for %s" % msghash)
         mymsg = "ack:%s" % (msghash)
-        self.sendmsg(msgt, mymsg, False)
+        self.sendmsg(msgto, mymsg, False)
 
     def sendmsg(self, msgto, base_msg, require_ack):
         print("Sending msg")
