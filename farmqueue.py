@@ -65,6 +65,14 @@ class FarmQueue():
                         print("Sending %s" % msghash)
                         self.fr.send_raw(self.send_queue[msghash]['msg'])
                         self.send_queue[msghash]['last_send'] = curtime
+                        if self.send_queue['msghash']['require_ack'] == False:
+                            if self.debug:
+                                print("Message %s sent, no ack required - removing from queue")
+                                del self.send_queue[msghash]
+                elif self.send_queue[msghash]['ack'] == True:
+                    if self.debug:
+                        print("Message %s acked - removing from queue" % msghash)
+                    del self.send_queue[msghash]
                 gevent.sleep(0.5)
             gevent.sleep(0.5)
     def recvmsgs(self):
@@ -86,7 +94,7 @@ class FarmQueue():
                             if msgack == 1:
                                 self.sendack(msgto, msghash)
                         else:
-                            self.recv_query[msghash] = {'from': msgfrom, 'msg': msg, 'processed': False}
+                            self.recv_queue[msghash] = {'from': msgfrom, 'msg': msg, 'processed': False}
                             if msgack == 1:
                                 send.sendack(msgto, msghash)
                 else:

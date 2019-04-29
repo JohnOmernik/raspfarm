@@ -91,7 +91,7 @@ def procmsg():
             else:
                 if len(senders) > 0:
                     thissender = random.choice(senders)
-                    require_ack = bool(random.randint(0,1))
+                    require_ack = True
                     print("Sending message from server to %s" % thissender)
                     fq.sendmsg(thissender, "A message from the server", require_ack)
                 else:
