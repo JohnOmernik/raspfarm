@@ -85,7 +85,7 @@ def procmsg():
         gevent.sleep(1)
         if random.randint(1,6) <= 2:
             if server == False:
-                require_ack = bool(random.randint(0,1))
+                require_ack = True
                 print("Sending message to server, require ack: %s" % require_ack)
                 fq.sendmsg(conf['server'], "A great message from %s to %s" % (myname, conf['server']), require_ack)
             else:

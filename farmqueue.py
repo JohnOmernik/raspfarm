@@ -67,7 +67,7 @@ class FarmQueue():
                         self.send_queue[msghash]['last_send'] = curtime
                         if self.send_queue[msghash]['require_ack'] == False:
                             if self.debug:
-                                print("Message %s sent, no ack required - removing from queue")
+                                print("Message %s sent, no ack required - removing from queue" % msghash)
                                 del self.send_queue[msghash]
                 elif self.send_queue[msghash]['ack'] == True:
                     if self.debug:
