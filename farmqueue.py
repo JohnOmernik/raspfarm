@@ -55,7 +55,8 @@ class FarmQueue():
         while True:
             if self.debug:
                 print("Top of sendmsgs: No. of Msgs in Queue: %s" % len(self.send_queue.keys()))
-            for msghash in self.send_queue.keys():
+            queue = OrderedDict(self.send_queue)
+            for msghash in queue.keys():
                 if self.debug:
                     print("processing: %s" % msghash)
                 curtime = int(time.time())
