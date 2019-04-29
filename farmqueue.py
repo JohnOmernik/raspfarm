@@ -84,11 +84,11 @@ class FarmQueue():
                 msgar = msg.split("~")
                 if len(msgar) == 5:
                     msgts = msgar[0]
-                    msgto = msgar[1]
-                    msgfrom = msgar[2]
+                    msgto = msgar[1].lower()
+                    msgfrom = msgar[2].lower()
                     msgack = msgar[3]
                     msgstr = msgar[4]
-                    if msgto == self.myname:
+                    if msgto.lower() == self.myname.lower():
                         if msgstr.find("ack:") >= 0:
                             msghash = msgstr.split(":")[1]
                             if self.debug:

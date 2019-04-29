@@ -32,7 +32,7 @@ def main():
     myname = socket.gethostname()
     print("Radio Type is %s" % conf['radiotype'])
     print("Server is %s" % conf['server'])
-    if myname == conf['server']:
+    if myname.lower() == conf['server'].lower():
         server = True
         print("Looks like we are the server!")
     else:
@@ -69,7 +69,7 @@ def procmsg():
             if msg is not None:
                 try:
                     armsg = msg.split("~")
-                    sender = armsg[2]
+                    sender = armsg[2].lower()
                     if sender not in senders:
                         senders.append(sender)
                 except:
