@@ -54,11 +54,14 @@ class FarmQueue():
     def sendmsgs(self):
         while True:
             if self.debug:
-                print("Top of sendmsgs")
+                print("Top of sendmsgs: No. of Msgs in Queue: %s" % len(self.send_queue.keys()))
             for msghash in self.send_queue.keys():
+                if self.debug:
+                    print("processing: %s" % msghash)
                 curtime = int(time.time())
                 if (self.send_queue[msghash]['ack'] == False and self.send_queue[msghash]['require_ack'] == True) or self.send_queue[msghash]['last_send'] == 0:
                     if curtime - self.send_queue[msghash]['last_send'] > self.resend_delay: 
+                        print("Sending %s" % msghash)
                         self.fr.send_raw(self.send_queue[msghash]['msg'])
                         self.send_queue[msghash]['last_send'] = curtime
                 gevent.sleep(0.5)
