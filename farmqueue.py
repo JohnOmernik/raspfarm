@@ -42,11 +42,15 @@ class FarmQueue():
             self.fr = farmradio.FarmRadio()
         else:
             self.fr = farmradio_usb.FarmRadio()
+    def getmsg(self):
+        for msg in self.recv_queue.keys():
+            if self.recv_queue[msg]['processed'] == False:
+                self.recv_queue[msg]['processed'] = True
+                gevent.sleep(1)
+                return self.recv_queue[msg]['msg']
+        gevent.sleep(1)
+        return None
 
-        gevent.joinall([
-            gevent.spawn(self.sendmsgs),
-            gevent.spawn(self.recvmsgs)
-        ])
     def sendmsgs(self):
         while True:
             if self.debug:
@@ -57,8 +61,8 @@ class FarmQueue():
                     if curtime - self.send_queue[msghash]['last_send'] > self.resend_delay: 
                         self.fr.send_raw(self.send_queue[msghash]['msg'])
                         self.send_queue[msghash]['last_send'] = curtime
-                gevent.sleep(2)
-            gevent.sleep(2)
+                gevent.sleep(0.5)
+            gevent.sleep(0.5)
     def recvmsgs(self):
         while True:
             if self.debug:
@@ -73,7 +77,7 @@ class FarmQueue():
                     msgack = msgar[3]
                     msgstr = msgar[4]
                     if msgto == self.myname:
-                        msghash = hashlib.md5(msg).hexdigest()
+                        msghash = hashlib.md5(msg.encode("UTF-8")).hexdigest()
                         if msghash in self.recv_queue:
                             if msgack == 1:
                                 self.sendack(msgto, msghash)
@@ -100,8 +104,8 @@ class FarmQueue():
         else:
             msgack = 0
         strmsg = "%s~%s~%s~%s~%s" % (curtime, msgto, self.myname, msgack, base_msg)
-        msghash = hashlib.md5(strmsg).hexdigest()
-        self.send_queue[msghash] = {'to': to, 'msg': strmsg, 'last_send': 0, 'require_ack': require_ack, "ack": False}
+        msghash = hashlib.md5(strmsg.encode("UTF-8")).hexdigest()
+        self.send_queue[msghash] = {'to': msgto, 'msg': strmsg, 'last_send': 0, 'require_ack': require_ack, "ack": False}
 
 
 if __name__ == "__main__":
