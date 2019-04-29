@@ -64,7 +64,7 @@ class FarmQueue():
             if self.debug:
                 print("Top of recvmsgs")
             msg = self.fr.recv_raw(self.timeout)
-            if msg != "":
+            if msg != "" and msg is not None:
                 msgar = msg.split("~")
                 if len(msgar) == 5:
                     msgts = msgar[0]
