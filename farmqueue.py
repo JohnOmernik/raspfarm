@@ -81,14 +81,18 @@ class FarmQueue():
                 print("Top of recvmsgs")
             msg = self.fr.recv_raw(self.timeout)
             if msg != "" and msg is not None:
+                if self.debug:
+                    print("Got a message")
                 msgar = msg.split("~")
                 if len(msgar) == 5:
                     msgts = msgar[0]
                     msgto = msgar[1].lower()
                     msgfrom = msgar[2].lower()
-                    msgack = msgar[3]
+                    msgack = int(msgar[3])
                     msgstr = msgar[4]
                     if msgto.lower() == self.myname.lower():
+                        if self.debug:
+                            print("Message is for me")
                         if msgstr.find("ack:") >= 0:
                             msghash = msgstr.split(":")[1]
                             if self.debug:
@@ -99,11 +103,11 @@ class FarmQueue():
                             msghash = hashlib.md5(msg.encode("UTF-8")).hexdigest()
                             if msghash in self.recv_queue:
                                 if msgack == 1:
-                                    self.sendack(msgto, msghash)
+                                    self.sendack(msgfrom, msghash)
                             else:
                                 self.recv_queue[msghash] = {'from': msgfrom, 'msg': msg, 'processed': False}
                                 if msgack == 1:
-                                    send.sendack(msgto, msghash)
+                                    send.sendack(msgfrom, msghash)
                 else:
                     print("Odd message: %s" % msg)
             gevent.sleep(0.5)
