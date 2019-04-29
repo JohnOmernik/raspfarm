@@ -89,14 +89,21 @@ class FarmQueue():
                     msgack = msgar[3]
                     msgstr = msgar[4]
                     if msgto == self.myname:
-                        msghash = hashlib.md5(msg.encode("UTF-8")).hexdigest()
-                        if msghash in self.recv_queue:
-                            if msgack == 1:
-                                self.sendack(msgto, msghash)
-                        else:
-                            self.recv_queue[msghash] = {'from': msgfrom, 'msg': msg, 'processed': False}
-                            if msgack == 1:
-                                send.sendack(msgto, msghash)
+                        if msgstr.find("ack:"):
+                            msghash = msgstr.split(":")[1]
+                            if self.debug:
+                                print("Recv ACK for message %s" % msghash)
+                            self.send_queue[msghash]['ack'] = True
+                            # this is a Message ack
+                        else
+                            msghash = hashlib.md5(msg.encode("UTF-8")).hexdigest()
+                            if msghash in self.recv_queue:
+                                if msgack == 1:
+                                    self.sendack(msgto, msghash)
+                            else:
+                                self.recv_queue[msghash] = {'from': msgfrom, 'msg': msg, 'processed': False}
+                                if msgack == 1:
+                                    send.sendack(msgto, msghash)
                 else:
                     print("Odd message: %s" % msg)
             gevent.sleep(0.5)
@@ -105,6 +112,8 @@ class FarmQueue():
 
     # Ack a message we have recieved
     def sendack(self, msgto, msghash):
+        if self.debug:
+            print("Sending msgack for %s" % msghash)
         mymsg = "ack:%s" % (msghash)
         self.sendmsg(msgt, mymsg, False)
 
