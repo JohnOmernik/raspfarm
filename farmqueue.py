@@ -107,7 +107,7 @@ class FarmQueue():
                             else:
                                 self.recv_queue[msghash] = {'from': msgfrom, 'msg': msg, 'processed': False}
                                 if msgack == 1:
-                                    send.sendack(msgfrom, msghash)
+                                    self.sendack(msgfrom, msghash)
                 else:
                     print("Odd message: %s" % msg)
             gevent.sleep(0.5)
