@@ -4,6 +4,7 @@ keys/*
 keys/**
 
 
+farmradio.cfg
 __pycache__/
 __pycache__/*
 __pycache__/**
