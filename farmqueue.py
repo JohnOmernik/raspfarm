@@ -95,7 +95,7 @@ class FarmQueue():
                                 print("Recv ACK for message %s" % msghash)
                             self.send_queue[msghash]['ack'] = True
                             # this is a Message ack
-                        else
+                        else:
                             msghash = hashlib.md5(msg.encode("UTF-8")).hexdigest()
                             if msghash in self.recv_queue:
                                 if msgack == 1:
