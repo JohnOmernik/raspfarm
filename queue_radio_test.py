@@ -57,7 +57,6 @@ def procmsg():
     global conf
     global myname
     global senders
-
     while True:
         try:
 #            if conf['debug']:

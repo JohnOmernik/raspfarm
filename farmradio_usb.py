@@ -76,10 +76,11 @@ class FarmRadio():
             mydata = data.replace("radio_rx  FFFF0000", "").strip()
             try:
                 tpacket = binascii.unhexlify(mydata)
+                packet_text = str(tpacket, "utf-8")
             except:
                 print("error: %s" % mydata)
                 tpacket = b"decode_error"
-            packet_text = str(tpacket, "utf-8")
+                packet_text = str(tpacket, "utf-8")
             self.prev_packet = packet_text
         return packet_text, snr
 
