@@ -86,7 +86,7 @@ def procmsg():
             if conf['server'] == False:
                 require_ack = True
                 print(">>>>> Sending message to server, require ack: %s" % require_ack)
-                fq.sendmsg(conf['server'], "A worker message to the server from %s to %s" % (myname, conf['server']), require_ack)
+                fq.sendmsg(conf['servername'], "A worker message to the server from %s to %s" % (myname, conf['servername']), require_ack)
             else:
                 if len(senders) > 0:
                     thissender = random.choice(senders)

@@ -141,7 +141,7 @@ class FarmQueue():
         msghash = hashlib.md5(strmsg.encode("UTF-8")).hexdigest()
 
         if self.debug:
-            print("##### Putting msg %s in send_queue" % msghash)
+            print("##### Putting msg %s in send_queue: %s" % (msghash, strmsg))
 
         self.send_queue[msghash] = {'to': msgto, 'msg': strmsg, 'last_send': 0, 'require_ack': require_ack, "ack": False}
 
