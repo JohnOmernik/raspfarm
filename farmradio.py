@@ -17,7 +17,7 @@ def main():
     print ("Radio Testing")
 
 class FarmRadio:
-    RADIO_FREQ_MHZ = 915.0
+    RADIO_FREQ_MHZ = 915.5
     RADIO_TX_PWR = 23   # The default RADIO_TX_PWR is 13, 23 is the max
     spi = None
     rfm9x = None
