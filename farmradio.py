@@ -46,7 +46,7 @@ class FarmRadio:
         snr = None
         if packet is not None:
             self.prev_packet = packet
-            snr = self.rfrm9x.rssi
+            snr = self.rfm9x.rssi
             try:
                 packet_text = str(self.prev_packet, "utf-8")
             except:
