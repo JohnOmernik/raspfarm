@@ -92,11 +92,15 @@ class FarmQueue():
             if msg != "" and msg is not None:
                 msgar = msg.split("~")
                 if len(msgar) == 5:
-                    msgts = msgar[0]
-                    msgto = msgar[1].lower()
-                    msgfrom = msgar[2].lower()
-                    msgack = int(msgar[3])
-                    msgstr = msgar[4]
+                    try:
+                        msgts = msgar[0]
+                        msgto = msgar[1].lower()
+                        msgfrom = msgar[2].lower()
+                        msgack = int(msgar[3])
+                        msgstr = msgar[4]
+                    except:
+                        print("Wonky message: %s" % msg)
+                        msgto = None
                     if msgto.lower() == self.myname.lower(): # If the dest address is the same as me, then accept the messages
                         if self.debug:
                             print("##### Got a FQ message at %s signal: %s" % (msg, snr))
