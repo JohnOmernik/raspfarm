@@ -55,7 +55,7 @@ class FarmRadio():
         print("")
 
 
-        self.ser = serial.Serial(self.PORT, '57600', timeout=self.timeout)
+        self.ser = serial.Serial(self.radio_serial_port, '57600', timeout=self.timeout)
 
         watchdog_timeout = int((self.timeout * 1000)) - 500
         self.myname = socket.gethostname().lower()
