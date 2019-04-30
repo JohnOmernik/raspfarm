@@ -23,6 +23,7 @@ class FarmRadio:
     rfm9x = None
     prev_packet = None
     myname = None
+    timeout = 2.0
     def __init__(self):
         # Configure LoRa Radio
         print("Init - Radio")
@@ -38,18 +39,20 @@ class FarmRadio:
         self.rfm9x.tx_power = self.RADIO_TX_PWR
 
     # check for packet rx
-    def recv_raw(self, mytimeout=1.0):
-        packet = self.rfm9x.receive(timeout=mytimeout)
+    def recv_raw(self):
+        packet = self.rfm9x.receive(timeout=self.timeout)
+        snr = None
         if packet is not None:
             self.prev_packet = packet
+            snr = self.rfrm9x.rssi
             try:
                 packet_text = str(self.prev_packet, "utf-8")
             except:
                 print("Failed Packet Decode - Dropping Packet")
-                packet_text = "Error"
+                packet_text = "decode_error"
         else:
             packet_text = None
-        return packet_text
+        return packet_text, snr
 
     def send_raw(self, msg):
         msgtime = int(time.time())
