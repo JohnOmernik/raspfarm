@@ -72,8 +72,9 @@ class FarmRadio():
         data = packet.decode('UTF-8')
         if data == "radio_err":
             packet_text = None
-        elif data.find("radio_rx") == 0:
-            mydata = data.replace("radio_rx  FFFF0000", "").strip()
+        elif data.find("radio_rx ") == 0:
+            mydata = data.replace("radio_rx ", "").strip()
+            mydata = mydata[8:]
             try:
                 tpacket = binascii.unhexlify(mydata)
                 packet_text = str(tpacket, "utf-8")
