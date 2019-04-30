@@ -37,7 +37,7 @@ class FarmQueue():
         self.debug = debug
         self.radio = radio
         self.timeout = timeout
-        self.myname = socket.gethostname()
+        self.myname = socket.gethostname().lower()
 
         if self.radio == "hat":
             self.fr = farmradio.FarmRadio()

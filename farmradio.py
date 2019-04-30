@@ -30,7 +30,7 @@ class FarmRadio:
         print("Frequency: %s" % self.RADIO_FREQ_MHZ)
         print("TX Power: %s" % self.RADIO_TX_PWR)
         print("")
-        self.myname = socket.gethostname()
+        self.myname = socket.gethostname().lower()
         CS = DigitalInOut(board.CE1)
         RESET = DigitalInOut(board.D25)
         self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)

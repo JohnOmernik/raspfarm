@@ -24,7 +24,7 @@ class FarmRadio():
         print("Port: %s " % self.PORT)
         print("")
         self.ser = serial.Serial(self.PORT, '57600', timeout=self.TIMEOUT)
-        self.myname = socket.gethostname()
+        self.myname = socket.gethostname().lower()
 
         print(self.send_cmd('mac pause', 1))
         print(self.send_cmd('radio set mod lora', 1))

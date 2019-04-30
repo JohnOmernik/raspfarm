@@ -23,7 +23,7 @@ def main():
     rawconf = f.read().strip()
     conf = json.loads(rawconf)
     f.close()
-    myname = socket.gethostname()
+    myname = socket.gethostname().lower()
 
     print("Radio Type is %s" % conf['radiotype'])
     print("Server is %s" % conf['servername'])
