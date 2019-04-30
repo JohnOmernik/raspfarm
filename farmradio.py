@@ -17,28 +17,69 @@ def main():
     print ("Radio Testing")
 
 class FarmRadio:
-    RADIO_FREQ_MHZ = 915.5
-    RADIO_TX_PWR = 23   # The default RADIO_TX_PWR is 13, 23 is the max
+    radio_freq_mhz = None
+    radio_tx_pwr = None
+    radio_serial_port = None
+    radio_mode = None
+    radio_spread_factor = None
+    radio_crc = None
+    radio_cr = None
+    radio_bw = None
+
+    timeout = None
+    myname = None
     spi = None
     rfm9x = None
+    ser = None
     prev_packet = None
-    myname = None
-    timeout = 2.0
-    def __init__(self, timeout=2.0):
+    radio_conf={}
+    debug = None
+ 
+    def __init__(self, debug=False, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+        self.debug = debug
+        self.timeout = timeout
+        self.radio_conf = radio_conf
+
+        self.radio_freq_mhz = radio_conf['radio_freq_mhz']
+        self.radio_tx_pwr = radio_conf['radio_tx_pwr']
+        self.radio_serial_port = radio_conf['radio_serial_port']
+        self.radio_mode = radio_conf['radio_mode']
+        self.radio_spread_factor = radio_conf['radio_spread_factor']
+        self.radio_crc = bool(radio_conf['radio_crc'])
+        if self.radio_crc:
+            str_radio_crc = "on"
+        else:
+            str_radio_crc = "off"
+        self.radio_cr = radio_conf['radio_cr']
+        self.radio_bw = radio_conf['radio_bw']
         # Configure LoRa Radio
         print("Init - Radio")
         print("------------")
-        print("Frequency: %s" % self.RADIO_FREQ_MHZ)
-        print("TX Power: %s" % self.RADIO_TX_PWR)
+        print("Frequency: %s" % self.radio_freq_mhz)
+        print("TX Power: %s" % self.radio_tx_pwr)
+        print("Port: %s " % self.radio_serial_port)
         print("Packet Timeout: %s" % timeout)
         print("")
-        self.timeout = timeout
+
         self.myname = socket.gethostname().lower()
         CS = DigitalInOut(board.CE1)
         RESET = DigitalInOut(board.D25)
         self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, CS, RESET, self.RADIO_FREQ_MHZ)
-        self.rfm9x.tx_power = self.RADIO_TX_PWR
+        self.rfm9x = adafruit_rfm9x.RFM9x(self.spi, CS, RESET, self.radio_freq_mhz)
+
+        self.rfm9x.tx_power = self.radio_tx_pwr
+        self.rfm9x.signal_bandwidth = self.radio_bw * 1000
+        self.rfm9x.coding_rate = self.radio_cr
+        self.rfm9x.spreading_factor = self.radio_spread_factor
+        self.rfm9x.enable_crc = self.radio_crc
+
+        print("Radio Init Complete")
+
+
+
+
+
+
 
     # check for packet rx
     def recv_raw(self):

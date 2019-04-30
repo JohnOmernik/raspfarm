@@ -41,7 +41,7 @@ def main():
     else:
         conf['debug'] = False
 
-    fq = farmqueue.FarmQueue(conf['radiotype'], debug=conf['debug'], timeout=conf['timeout'], resend_delay=conf['resend_delay'])
+    fq = farmqueue.FarmQueue(debug=conf['debug'], timeout=conf['timeout'], resend_delay=conf['resend_delay'], radio_conf=conf)
 
     print("Hello - Testing Radio Sending and Queing")
 

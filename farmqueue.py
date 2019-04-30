@@ -28,21 +28,20 @@ class FarmQueue():
     fr = None
     send_queue = OrderedDict()
     recv_queue = OrderedDict()
-
-    radio = "" # hat or usb loaded with __init__
-    resend_delay = 10 # Number of seconds to wait between resending of messages
+    radio_conf = {}
+    resend_delay = None
     myname = ""
-    timeout = 1.0
+    timeout = None
     debug = False
 
-    def __init__(self, radio, debug=False, timeout=1.0, resend_delay=5):
+    def __init__(self,  debug=False, timeout=1.0, resend_delay=5, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+        self.radio_conf = radio_conf
         self.debug = debug
-        self.radio = radio
         self.timeout = timeout
         self.resend_delay = resend_delay
         self.myname = socket.gethostname().lower()
 
-        if self.radio == "hat":
+        if self.radio_conf['radio_serial_port']  == "spi":
             self.fr = farmradio.FarmRadio(timeout=self.timeout)
         else:
             self.fr = farmradio_usb.FarmRadio(timeout=self.timeout)

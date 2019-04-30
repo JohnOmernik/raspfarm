@@ -8,46 +8,70 @@ import binascii
 import random
 
 class FarmRadio():
-    RADIO_FREQ_MHZ = 915.5
-    RADIO_TX_PWR = 20   # The default RADIO_TX_PWR is 13, 23 is the max
-    PORT = "/dev/ttyUSB0"
+    radio_freq_mhz = None
+    radio_tx_pwr = None
+    radio_serial_port = None
+    radio_mode = None
+    radio_spread_factor = None
+    radio_crc = None
+    radio_cr = None
+    radio_bw = None
+
+    timeout = None
     myname = None
+    spi = None
+    rfm9x = None
     ser = None
-    timeout = 2.0
-    prev_packet = ""
-    def __init__(self, timeout=2.0):
+    prev_packet = None
+    radio_conf={}
+    debug = None
+
+ 
+   def __init__(self, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "/dev/ttyUSB0", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+
+        self.debug = debug
+        self.timeout = timeout
+        self.radio_conf = radio_conf
+        self.radio_freq_mhz = radio_conf['radio_freq_mhz']
+        self.radio_tx_pwr = radio_conf['radio_tx_pwr']
+        self.radio_serial_port = radio_conf['radio_serial_port']
+        self.radio_mode = radio_conf['radio_mode']
+        self.radio_spread_factor = str(radio_conf['radio_spread_factor'])
+        self.radio_crc = bool(radio_conf['radio_crc'])
+        if self.radio_crc:
+            str_radio_crc = "on"
+        else:
+            str_radio_crc = "off"
+        self.radio_cr = radio_conf['radio_cr']
+        str_radio_cr = "4/%s"self.radio_cr
+        self.radio_bw = radio_conf['radio_bw']
         # Configure LoRa Radio
         print("Init - Radio")
         print("------------")
-        print("Frequency: %s" % self.RADIO_FREQ_MHZ)
-        print("TX Power: %s" % self.RADIO_TX_PWR)
-        print("Port: %s " % self.PORT)
+        print("Frequency: %s" % self.radio_freq_mhz)
+        print("TX Power: %s" % self.radio_tx_pwr)
+        print("Port: %s " % self.radio_serial_port)
         print("Packet Timeout: %s" % timeout)
         print("")
-        self.timeout = timeout
-        self.ser = serial.Serial(self.PORT, '57600', timeout=self.timeout)
 
+
+        self.ser = serial.Serial(self.PORT, '57600', timeout=self.timeout)
 
         watchdog_timeout = int((self.timeout * 1000)) - 500
         self.myname = socket.gethostname().lower()
-
+        
         print(self.send_cmd('mac pause', 1))
         time.sleep(0.1)
-        print(self.send_cmd('radio set mod lora', 1))
-        print(self.send_cmd('radio set freq %s' % int((self.RADIO_FREQ_MHZ * 1000000)), 1))
-        print(self.send_cmd('radio set pwr %s' % self.RADIO_TX_PWR, 1))
-        print(self.send_cmd('radio set sf sf7', 1))
-        print(self.send_cmd('radio set afcbw 100', 1))
-        print(self.send_cmd('radio set rxbw 125', 1))
-        #print(self.send_cmd('radio set bitrate 125000',1))  # FSK mode only
-        print(self.send_cmd('radio set fdev 5000',1))
-        print(self.send_cmd('radio set prlen 8',1))
-        print(self.send_cmd('radio set crc off',1))
+        print(self.send_cmd('radio set mod %s' % self.radio_mode, 1))
+        print(self.send_cmd('radio set freq %s' % int((self.radio_freq_mhz * 1000000)), 1))
+        print(self.send_cmd('radio set pwr %s' % self.radio_tx_pwr, 1))
+        print(self.send_cmd('radio set sf sf%s' % self.radio_spread_factor, 1))
+        print(self.send_cmd('radio set crc %s' % str_radio_crc,1))
         #print(self.send_cmd('radio set iqi off',1))
-        print(self.send_cmd('radio set cr 4/5',1))
+        print(self.send_cmd('radio set cr %s' % str_radio_cr,1))
         print(self.send_cmd('radio set wdt %s' % watchdog_timeout,1))
         #print(self.send_cmd('radio set sync 12',1))
-        print(self.send_cmd('radio set bw 125',1))
+        print(self.send_cmd('radio set bw %s' self.radio_bw,1))
         print("Radio Init Complete")
 
 
