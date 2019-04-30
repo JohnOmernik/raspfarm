@@ -87,7 +87,7 @@ class FarmQueue():
             msg = self.fr.recv_raw(self.timeout)
             if msg != "" and msg is not None:
                 if self.debug:
-                    print("##### Got a FQ message")
+                    print("##### Got a FQ message: %s" % msg)
                 msgar = msg.split("~")
                 if len(msgar) == 5:
                     msgts = msgar[0]
@@ -116,6 +116,8 @@ class FarmQueue():
                                 self.recv_queue[msghash] = {'from': msgfrom, 'msg': msg, 'processed': False}
                                 if msgack == 1:
                                     self.sendack(msgfrom, msghash)
+                    else:
+                        print("!!!>> Message not for me: %s vs. %s" % (msgto.lower(), self.myname.lower()))
                 else:
                     print("Odd message: %s" % msg)
             gevent.sleep(0.5)
