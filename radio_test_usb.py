@@ -13,9 +13,9 @@ def main():
 
     while True:
         try:
-            raw_data, raw_rssi = fr.recv_raw(5.0)
+            raw_data = fr.recv_raw(5.0)
             if raw_data is not None:
-                print("Signal: %s - Data: %s" % (raw_rssi, raw_data))
+                print("Data: %s" % ( raw_data))
                 time.sleep(0.5)
             else:
                 print("No Data")
