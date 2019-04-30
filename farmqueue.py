@@ -26,17 +26,20 @@ class FarmQueue():
 
 
     fr = None
-    radio = "" # hat or usb loaded with __init__
     send_queue = OrderedDict()
     recv_queue = OrderedDict()
+
+    radio = "" # hat or usb loaded with __init__
     resend_delay = 10 # Number of seconds to wait between resending of messages
     myname = ""
     timeout = 1.0
     debug = False
-    def __init__(self, radio, debug=False, timeout=1.0):
+
+    def __init__(self, radio, debug=False, timeout=1.0, resend_delay=5):
         self.debug = debug
         self.radio = radio
         self.timeout = timeout
+        self.resend_delay = resend_delay
         self.myname = socket.gethostname().lower()
 
         if self.radio == "hat":

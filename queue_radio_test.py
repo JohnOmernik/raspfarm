@@ -33,7 +33,6 @@ def main():
         conf['server'] = True
         print("Looks like we are the server!")
     else:
-        print("No server for %s" % myname)
         conf['server'] = False
 
     if conf['debug'] == 1:
@@ -42,7 +41,7 @@ def main():
     else:
         conf['debug'] = False
 
-    fq = farmqueue.FarmQueue(conf['radiotype'], debug=conf['debug'])
+    fq = farmqueue.FarmQueue(conf['radiotype'], debug=conf['debug'], timeout=conf['timeout'], resend_delay=conf['resend_delay'])
 
     print("Hello - Testing Radio Sending and Queing")
 
