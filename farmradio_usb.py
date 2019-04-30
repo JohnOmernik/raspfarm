@@ -36,7 +36,7 @@ class FarmRadio():
         print(self.send_cmd('radio set cr 4/5',1))
         print(self.send_cmd('radio set crc off',1))
         print(self.send_cmd('radio set bw 125',1))
-        print(self.send_cmd('radio set freq %s' % (self.RADIO_FREQ_MHZ * 1000000), 1))
+        print(self.send_cmd('radio set freq %s' % int((self.RADIO_FREQ_MHZ * 1000000)), 1))
         print(self.send_cmd('radio set pwr %s' % self.RADIO_TX_PWR, 1))
         print("Radio Init Complete")
 
