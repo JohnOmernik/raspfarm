@@ -9,7 +9,7 @@ import random
 
 class FarmRadio():
     RADIO_FREQ_MHZ = 915.5
-    RADIO_TX_PWR = 17   # The default RADIO_TX_PWR is 13, 23 is the max
+    RADIO_TX_PWR = 20   # The default RADIO_TX_PWR is 13, 23 is the max
     PORT = "/dev/ttyUSB0"
     myname = None
     ser = None
@@ -26,6 +26,9 @@ class FarmRadio():
         print("")
         self.timeout = timeout
         self.ser = serial.Serial(self.PORT, '57600', timeout=self.timeout)
+
+
+        watchdog_timeout = int((self.timeout * 1000)) - 500
         self.myname = socket.gethostname().lower()
 
         print(self.send_cmd('mac pause', 1))
@@ -36,14 +39,14 @@ class FarmRadio():
         print(self.send_cmd('radio set sf sf7', 1))
         print(self.send_cmd('radio set afcbw 100', 1))
         print(self.send_cmd('radio set rxbw 125', 1))
-        print(self.send_cmd('radio set bitrate 50000',1))
-        print(self.send_cmd('radio set fdev 25000',1))
+        #print(self.send_cmd('radio set bitrate 125000',1))  # FSK mode only
+        print(self.send_cmd('radio set fdev 5000',1))
         print(self.send_cmd('radio set prlen 8',1))
         print(self.send_cmd('radio set crc off',1))
         #print(self.send_cmd('radio set iqi off',1))
         print(self.send_cmd('radio set cr 4/5',1))
-        print(self.send_cmd('radio set wdt %s' % int(self.timeout * 1000),1))
-        print(self.send_cmd('radio set sync 12',1))
+        print(self.send_cmd('radio set wdt %s' % watchdog_timeout,1))
+        #print(self.send_cmd('radio set sync 12',1))
         print(self.send_cmd('radio set bw 125',1))
         print("Radio Init Complete")
 
