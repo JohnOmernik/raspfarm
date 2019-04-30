@@ -60,8 +60,8 @@ def procmsg():
 
     while True:
         try:
-            if conf['debug']:
-                print("top of main loop")
+#            if conf['debug']:
+#                print("top of main loop")
             msg = fq.getmsg()
             if msg is not None:
                 try:
