@@ -26,7 +26,7 @@ def main():
     myname = socket.gethostname()
 
     print("Radio Type is %s" % conf['radiotype'])
-    print("Server is %s" % conf['server'])
+    print("Server is %s" % conf['servername'])
 
 
     if myname.lower() == conf['servername'].lower():
@@ -36,13 +36,13 @@ def main():
         print("No server for %s" % myname)
         conf['server'] = False
 
-   if conf['debug'] == 1:
+    if conf['debug'] == 1:
         print("Debug is true")
         conf['debug'] = True
     else:
         conf['debug'] = False
 
-    fq = farmqueue.FarmQueue(conf['radiotype'], debug=mydebug)
+    fq = farmqueue.FarmQueue(conf['radiotype'], debug=conf['debug'])
 
     print("Hello - Testing Radio Sending and Queing")
 

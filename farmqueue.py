@@ -130,15 +130,17 @@ class FarmQueue():
         self.sendmsg(msgto, mymsg, False)
 
     def sendmsg(self, msgto, base_msg, require_ack):
-        msghash = hashlib.md5(strmsg.encode("UTF-8")).hexdigest()
-        if self.debug:
-            print("##### Sending msg %s in farmqueue" % msghash)
         curtime = int(time.time())
         if require_ack == True:
             msgack = 1
         else:
             msgack = 0
         strmsg = "%s~%s~%s~%s~%s" % (curtime, msgto, self.myname, msgack, base_msg)
+        msghash = hashlib.md5(strmsg.encode("UTF-8")).hexdigest()
+
+        if self.debug:
+            print("##### Putting msg %s in send_queue" % msghash)
+
         self.send_queue[msghash] = {'to': msgto, 'msg': strmsg, 'last_send': 0, 'require_ack': require_ack, "ack": False}
 
 
