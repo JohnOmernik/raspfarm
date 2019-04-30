@@ -90,8 +90,6 @@ class FarmQueue():
                 #print("Top of recvmsgs")
             msg = self.fr.recv_raw(self.timeout)
             if msg != "" and msg is not None:
-                if self.debug:
-                    print("##### Got a FQ message: %s" % msg)
                 msgar = msg.split("~")
                 if len(msgar) == 5:
                     msgts = msgar[0]
@@ -100,6 +98,8 @@ class FarmQueue():
                     msgack = int(msgar[3])
                     msgstr = msgar[4]
                     if msgto.lower() == self.myname.lower(): # If the dest address is the same as me, then accept the messages
+                        if self.debug:
+                            print("##### Got a FQ message: %s" % msg)
                         if msgstr.find("ack:") >= 0:    # Check to see if this is an acked message
                             msghash = msgstr.split(":")[1]
                             if self.debug:
