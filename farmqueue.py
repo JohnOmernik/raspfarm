@@ -43,9 +43,9 @@ class FarmQueue():
         self.myname = socket.gethostname().lower()
 
         if self.radio == "hat":
-            self.fr = farmradio.FarmRadio()
+            self.fr = farmradio.FarmRadio(timeout=self.timeout)
         else:
-            self.fr = farmradio_usb.FarmRadio()
+            self.fr = farmradio_usb.FarmRadio(timeout=self.timeout)
 
     def getmsg(self):
         for msg in self.recv_queue.keys():
@@ -88,7 +88,7 @@ class FarmQueue():
             if self.debug:
                 pass
                 #print("Top of recvmsgs")
-            msg, snr = self.fr.recv_raw(self.timeout)
+            msg, snr = self.fr.recv_raw()
             if msg != "" and msg is not None:
                 msgar = msg.split("~")
                 if len(msgar) == 5:

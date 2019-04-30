@@ -24,13 +24,15 @@ class FarmRadio:
     prev_packet = None
     myname = None
     timeout = 2.0
-    def __init__(self):
+    def __init__(self, timeout=2.0):
         # Configure LoRa Radio
         print("Init - Radio")
         print("------------")
         print("Frequency: %s" % self.RADIO_FREQ_MHZ)
         print("TX Power: %s" % self.RADIO_TX_PWR)
+        print("Packet Timeout: %s" % timeout)
         print("")
+        self.timeout = timeout
         self.myname = socket.gethostname().lower()
         CS = DigitalInOut(board.CE1)
         RESET = DigitalInOut(board.D25)

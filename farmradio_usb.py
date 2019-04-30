@@ -15,19 +15,21 @@ class FarmRadio():
     ser = None
     timeout = 2.0
     prev_packet = ""
-    def __init__(self, timeout = 2.0):
+    def __init__(self, timeout=2.0):
         # Configure LoRa Radio
         print("Init - Radio")
         print("------------")
         print("Frequency: %s" % self.RADIO_FREQ_MHZ)
         print("TX Power: %s" % self.RADIO_TX_PWR)
         print("Port: %s " % self.PORT)
+        print("Packet Timeout: %s" % timeout)
         print("")
+        self.timeout = timeout
         self.ser = serial.Serial(self.PORT, '57600', timeout=self.timeout)
         self.myname = socket.gethostname().lower()
+
         print(self.send_cmd('mac pause', 1))
         time.sleep(0.1)
-
         print(self.send_cmd('radio set mod lora', 1))
         print(self.send_cmd('radio set freq %s' % int((self.RADIO_FREQ_MHZ * 1000000)), 1))
         print(self.send_cmd('radio set pwr %s' % self.RADIO_TX_PWR, 1))
