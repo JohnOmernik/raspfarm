@@ -27,7 +27,7 @@ class FarmRadio():
     debug = None
 
  
-    def __init__(self, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "/dev/ttyUSB0", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+    def __init__(self, debug=False, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "/dev/ttyUSB0", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
 
         self.debug = debug
         self.timeout = timeout
