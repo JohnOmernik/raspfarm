@@ -27,7 +27,7 @@ class FarmRadio():
     debug = None
 
  
-   def __init__(self, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "/dev/ttyUSB0", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+    def __init__(self, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "/dev/ttyUSB0", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
 
         self.debug = debug
         self.timeout = timeout
@@ -43,7 +43,7 @@ class FarmRadio():
         else:
             str_radio_crc = "off"
         self.radio_cr = radio_conf['radio_cr']
-        str_radio_cr = "4/%s"self.radio_cr
+        str_radio_cr = "4/%s" %  self.radio_cr
         self.radio_bw = radio_conf['radio_bw']
         # Configure LoRa Radio
         print("Init - Radio")
@@ -71,7 +71,7 @@ class FarmRadio():
         print(self.send_cmd('radio set cr %s' % str_radio_cr,1))
         print(self.send_cmd('radio set wdt %s' % watchdog_timeout,1))
         #print(self.send_cmd('radio set sync 12',1))
-        print(self.send_cmd('radio set bw %s' self.radio_bw,1))
+        print(self.send_cmd('radio set bw %s' % self.radio_bw,1))
         print("Radio Init Complete")
 
 
