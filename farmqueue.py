@@ -79,10 +79,10 @@ class FarmQueue():
                         self.fr.send_raw(self.send_queue[msghash]['msg'])
                         self.send_queue[msghash]['last_send'] = curtime
                         print("Sending %s - %s - Ack Required: %s" % (msghash, self.send_queue[msghash]['msg'], self.send_queue[msghash]['require_ack']))
-                        if self.send_queue[msghash]['require_ack'] == False:
-                            del self.send_queue[msghash]
                         if curtime - self.send_queue[msghash]['first_send'] >= self.send_prune_window:
                             print(">>>>> !!!!!!! >>>>> !!!!! - Message %s was first sent %s and it's now %s, longer then the send_prune_window(%s): Removing" % (msghash, self.send_queue[msghash]['first_send'], curtime, self.send_prune_window))
+                            del self.send_queue[msghash]
+                        elif self.send_queue[msghash]['require_ack'] == False:
                             del self.send_queue[msghash]
                 elif self.send_queue[msghash]['ack'] == True:
                     del self.send_queue[msghash]
