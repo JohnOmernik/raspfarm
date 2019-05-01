@@ -25,6 +25,7 @@ class FarmRadio:
     radio_crc = None
     radio_cr = None
     radio_bw = None
+    radio_wdt = None
 
     timeout = None
     myname = None
@@ -35,7 +36,7 @@ class FarmRadio:
     radio_conf={}
     debug = None
  
-    def __init__(self, debug=False, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+    def __init__(self, debug=False, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125, "radio_wdt": 0}):
         self.debug = debug
         self.timeout = timeout
         self.radio_conf = radio_conf
@@ -46,6 +47,7 @@ class FarmRadio:
         self.radio_mode = radio_conf['radio_mode']
         self.radio_spread_factor = radio_conf['radio_spread_factor']
         self.radio_crc = bool(radio_conf['radio_crc'])
+        self.radio_wdt = radio_conf['radio_wdt']
         if self.radio_crc:
             str_radio_crc = "on"
         else:

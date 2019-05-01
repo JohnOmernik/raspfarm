@@ -17,7 +17,7 @@ class FarmRadio():
     radio_crc = None
     radio_cr = None
     radio_bw = None
-
+    radio_wdt = None
     timeout = None
     myname = None
     spi = None
@@ -28,7 +28,7 @@ class FarmRadio():
     debug = None
 
  
-    def __init__(self, debug=False, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "/dev/ttyUSB0", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+    def __init__(self, debug=False, timeout=2.0, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "/dev/ttyUSB0", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125, "radio_wdt": 0}):
 
         self.debug = debug
         self.timeout = timeout
@@ -39,6 +39,7 @@ class FarmRadio():
         self.radio_mode = radio_conf['radio_mode']
         self.radio_spread_factor = str(radio_conf['radio_spread_factor'])
         self.radio_crc = bool(radio_conf['radio_crc'])
+        self.radio_wdt = radio_conf['radio_wdt']
         if self.radio_crc:
             str_radio_crc = "on"
         else:
@@ -58,11 +59,6 @@ class FarmRadio():
 
         self.ser = serial.Serial(self.radio_serial_port, '57600', timeout=self.timeout)
 
-
-
-        watchdog_timeout = int((self.timeout * 1000)) - 2000
-        if watchdog_timeout < 0:
-            watchdog_timeout = 0
         self.myname = socket.gethostname().lower()
         print(self.send_cmd('mac pause', 1))
         time.sleep(0.1)
@@ -73,7 +69,7 @@ class FarmRadio():
         print(self.send_cmd('radio set crc %s' % str_radio_crc,1))
         #print(self.send_cmd('radio set iqi off',1))
         print(self.send_cmd('radio set cr %s' % str_radio_cr,1))
-        print(self.send_cmd('radio set wdt %s' % watchdog_timeout,1))
+        print(self.send_cmd('radio set wdt %s' % self.radio_wdt,1))
         #print(self.send_cmd('radio set sync 12',1))
         print(self.send_cmd('radio set bw %s' % self.radio_bw,1))
         print("Radio Init Complete")
@@ -83,7 +79,7 @@ class FarmRadio():
         btx = False
         if echo == 1:
             print(cmd)
-        if cmd.find("radio tx") >= 0: then
+        if cmd.find("radio tx") >= 0:
             btx = True
         self.ser.write(('%s\r\n' % cmd).encode('UTF-8'))
         time.sleep(0.3)

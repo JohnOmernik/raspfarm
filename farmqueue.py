@@ -34,7 +34,7 @@ class FarmQueue():
     timeout = None
     debug = False
 
-    def __init__(self,  debug=False, timeout=1.0, resend_delay=5, send_prune_window=60, recv_prune_window=60, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+    def __init__(self,  debug=False, timeout=1.0, resend_delay=5, send_prune_window=60, recv_prune_window=60, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125, "radio_wdt": 0}):
         self.radio_conf = radio_conf
         self.recv_prune_window = recv_prune_window # Number of seconds to leave a processed message  after the last ack in recv queue
         self.send_prune_window = send_prune_window # Number of seconds since first send (without an ack) to give up on message
