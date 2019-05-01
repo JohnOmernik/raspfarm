@@ -83,9 +83,9 @@ class FarmRadio():
             btx = True
         self.ser.write(('%s\r\n' % cmd).encode('UTF-8'))
         time.sleep(0.3)
-        retval = self.ser.readline().decode('UTF-8').replace("\r\n")
+        retval = self.ser.readline().decode('UTF-8').replace("\r\n", "")
         if btx == True and retval == "ok":
-            retval = self.ser.readline().decode('UTF-8').replace("\r\n")
+            retval = self.ser.readline().decode('UTF-8').replace("\r\n", "")
         return retval
 
     def recv_raw(self):
