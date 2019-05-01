@@ -81,7 +81,7 @@ class FarmRadio():
         if echo == 1:
             print(cmd)
         self.ser.write(('%s\r\n' % cmd).encode('UTF-8'))
-        time.sleep(0.1)
+        time.sleep(0.3)
         retval = self.ser.readline().decode('UTF-8')
         retval = retval.replace("\r\n", "")
         return retval
@@ -89,9 +89,8 @@ class FarmRadio():
     def recv_raw(self):
         packet = None
         snr = None
-        self.send_cmd('radio rx 0')
+        print(self.send_cmd('radio rx 0'), 1)
         packet = self.ser.read_until('\r\n')
-        
         snr = self.send_cmd("radio get snr")
         packet_text = ""
         data = packet.decode('UTF-8')
