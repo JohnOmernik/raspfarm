@@ -71,7 +71,7 @@ class FarmRadio():
         print(self.send_cmd('radio set crc %s' % str_radio_crc,1))
         #print(self.send_cmd('radio set iqi off',1))
         print(self.send_cmd('radio set cr %s' % str_radio_cr,1))
-        print(self.send_cmd('radio set wdt %s' % watchdog_timeout,1))
+#        print(self.send_cmd('radio set wdt %s' % watchdog_timeout,1))
         #print(self.send_cmd('radio set sync 12',1))
         print(self.send_cmd('radio set bw %s' % self.radio_bw,1))
         print("Radio Init Complete")
@@ -91,6 +91,7 @@ class FarmRadio():
         snr = None
         print(self.send_cmd('radio rx 0'), 1)
         packet = self.ser.read_until('\r\n')
+
         snr = self.send_cmd("radio get snr")
         packet_text = ""
         data = packet.decode('UTF-8')
