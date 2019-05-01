@@ -86,26 +86,11 @@ class FarmRadio():
         retval = retval.replace("\r\n", "")
         return retval
 
-    def _readline(self):
-        eol = b'\r\n'
-        leneol = len(eol)
-        line = bytearray()
-        while True:
-            c = self.ser.read(1)
-            if c:
-                line += c
-                if line[-leneol:] == eol:
-                    break
-            else:
-                break
-        return bytes(line)
-
-    # check for packet rx
     def recv_raw(self):
         packet = None
         snr = None
         self.send_cmd('radio rx 0')
-        packet = self._readline()
+        packet = self.ser.read_until('\r\n')
         snr = self.send_cmd("radio get snr")
         packet_text = ""
         data = packet.decode('UTF-8')
