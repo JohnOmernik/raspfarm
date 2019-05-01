@@ -84,8 +84,18 @@ class FarmRadio():
         self.ser.write(('%s\r\n' % cmd).encode('UTF-8'))
         time.sleep(0.3)
         retval = self.ser.readline().decode('UTF-8').replace("\r\n", "")
-        if btx == True and retval == "ok":
-            retval = self.ser.readline().decode('UTF-8').replace("\r\n", "")
+        if btx == False:
+            pass
+        else
+            if retval == "ok":
+                retval = self.ser.readline().decode('UTF-8').replace("\r\n", "")
+            elif retval == "busy":
+                retrycnt = 0
+                while retval != "ok" and retrycnt < 10:
+                    retrycnt += 1
+                    self.ser.write(('%s\r\n' % cmd).encode('UTF-8'))
+                    time.sleep(0.2)
+                    retval = self.ser.readline().decode('UTF-8').replace("\r\n", "")
         return retval
 
     def recv_raw(self):
@@ -126,7 +136,8 @@ class FarmRadio():
 
         mymsg = msg.encode("UTF-8")
         sendmsg = "radio tx " + "FFFF0000" + mymsg.hex()
-        self.send_cmd(sendmsg)
+        result = self.send_cmd(sendmsg)
+        print(result)
         return 0
 
 
