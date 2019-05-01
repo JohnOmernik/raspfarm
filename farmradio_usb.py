@@ -73,7 +73,7 @@ class FarmRadio():
         print(self.send_cmd('radio set crc %s' % str_radio_crc,1))
         #print(self.send_cmd('radio set iqi off',1))
         print(self.send_cmd('radio set cr %s' % str_radio_cr,1))
-#        print(self.send_cmd('radio set wdt %s' % watchdog_timeout,1))
+        print(self.send_cmd('radio set wdt %s' % watchdog_timeout,1))
         #print(self.send_cmd('radio set sync 12',1))
         print(self.send_cmd('radio set bw %s' % self.radio_bw,1))
         print("Radio Init Complete")
