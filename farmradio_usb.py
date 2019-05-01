@@ -6,6 +6,7 @@ import socket
 import serial
 import binascii
 import random
+import io
 
 class FarmRadio():
     radio_freq_mhz = None
@@ -57,6 +58,8 @@ class FarmRadio():
 
         self.ser = serial.Serial(self.radio_serial_port, '57600', timeout=self.timeout)
 
+
+
         watchdog_timeout = int((self.timeout * 1000)) - 500
         self.myname = socket.gethostname().lower()
         print(self.send_cmd('mac pause', 1))
@@ -83,21 +86,26 @@ class FarmRadio():
         retval = retval.replace("\r\n", "")
         return retval
 
+    def _readline(self):
+        eol = b'\r\n'
+        leneol = len(eol)
+        line = bytearray()
+        while True:
+            c = self.ser.read(1)
+            if c:
+                line += c
+                if line[-leneol:] == eol:
+                    break
+            else:
+                break
+        return bytes(line)
 
     # check for packet rx
     def recv_raw(self):
         packet = None
         snr = None
         self.send_cmd('radio rx 0')
-        curwait = 0
-        while curwait <= self.timeout:
-            time.sleep(0.5)
-            packet = self.ser.readline()
-            if packet is not None:
-                break
-            else:
-                curwait += 0.5
-        #packet = self.ser.readline()
+        packet = self._readline()
         snr = self.send_cmd("radio get snr")
         packet_text = ""
         data = packet.decode('UTF-8')
