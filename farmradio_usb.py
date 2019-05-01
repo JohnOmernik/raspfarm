@@ -111,7 +111,6 @@ class FarmRadio():
             print(data)
             packet_text = None
         elif data.find("radio_rx ") == 0:
-            print(mydata)
             mydata = data.replace("radio_rx ", "").strip()
             mydata = mydata[8:]
             try:
@@ -125,7 +124,7 @@ class FarmRadio():
         elif data is None:
             print("None")
         else:
-            print(data)
+            print("Unknown: %s" % data)
 
         return packet_text, snr
 
