@@ -111,6 +111,7 @@ class FarmRadio():
             print(data)
             packet_text = None
         elif data.find("radio_rx ") == 0:
+            print(mydata)
             mydata = data.replace("radio_rx ", "").strip()
             mydata = mydata[8:]
             try:
