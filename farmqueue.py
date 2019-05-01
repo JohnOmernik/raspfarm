@@ -34,9 +34,10 @@ class FarmQueue():
     timeout = None
     debug = False
 
-    def __init__(self,  debug=False, timeout=1.0, resend_delay=5, recv_prune_window=300, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+    def __init__(self,  debug=False, timeout=1.0, resend_delay=5, send_prune_window=60, recv_prune_window=60, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
         self.radio_conf = radio_conf
         self.recv_prune_window = recv_prune_window # Number of seconds to leave a processed message  after the last ack in recv queue
+        self.send_prune_window = send_prune_window # Number of seconds since first send (without an ack) to give up on message
         self.debug = debug
         self.timeout = timeout
         self.resend_delay = resend_delay
@@ -73,10 +74,15 @@ class FarmQueue():
                 curtime = int(time.time())
                 if (self.send_queue[msghash]['ack'] == False and self.send_queue[msghash]['require_ack'] == True) or self.send_queue[msghash]['last_send'] == 0:
                    if curtime - self.send_queue[msghash]['last_send'] > self.resend_delay:
+                        if self.send_queue[msghash]['first_send'] == 0:
+                            self.send_queue[msghash]['first_send'] = curtime
                         self.fr.send_raw(self.send_queue[msghash]['msg'])
                         self.send_queue[msghash]['last_send'] = curtime
                         print("Sending %s - %s - Ack Required: %s" % (msghash, self.send_queue[msghash]['msg'], self.send_queue[msghash]['require_ack']))
                         if self.send_queue[msghash]['require_ack'] == False:
+                            del self.send_queue[msghash]
+                        if curtime - self.send_queue[msghash]['first_send'] >= self.send_prune_window:
+                            print(">>>>> !!!!!!! >>>>> !!!!! - Message %s was first sent %s and it's now %s, longer then the send_prune_window(%s): Removing" % (msghash, self.send_queue[msghash]['first_send'], curtime, self.send_prune_window))
                             del self.send_queue[msghash]
                 elif self.send_queue[msghash]['ack'] == True:
                     del self.send_queue[msghash]
@@ -153,7 +159,7 @@ class FarmQueue():
         if self.debug:
             print("##### Putting msg %s in send_queue: %s" % (msghash, strmsg))
 
-        self.send_queue[msghash] = {'to': msgto, 'msg': strmsg, 'last_send': 0, 'require_ack': require_ack, "ack": False}
+        self.send_queue[msghash] = {'to': msgto, 'msg': strmsg, 'last_send': 0, 'first_send': 0,  'require_ack': require_ack, "ack": False}
 
 
 if __name__ == "__main__":
