@@ -34,8 +34,9 @@ class FarmQueue():
     timeout = None
     debug = False
 
-    def __init__(self,  debug=False, timeout=1.0, resend_delay=5, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+    def __init__(self,  debug=False, timeout=1.0, resend_delay=5, recv_process_window=300, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
         self.radio_conf = radio_conf
+        self.recv_prune_window = recv_process_window # Number of seconds to leave a processed message in recv queue
         self.debug = debug
         self.timeout = timeout
         self.resend_delay = resend_delay
@@ -47,37 +48,37 @@ class FarmQueue():
             self.fr = farmradio_usb.FarmRadio(debug=self.debug, timeout=self.timeout)
 
     def getmsg(self):
-        for msg in self.recv_queue.keys():
-            if self.recv_queue[msg]['processed'] == False:
-                self.recv_queue[msg]['processed'] = True
+        queue = OrderedDict(self.recv_queue)
+        for msg in queue.keys():
+            curtime = int(time.time())
+            if self.recv_queue[msg]['ts_proc'] == 0:
+                self.recv_queue[msg]['ts_proc'] = curtime
                 gevent.sleep(1)
                 return self.recv_queue[msg]['msg']
+            elif self.recv_queue[msg]['ts_proc'] > 0:
+                if curtime - self.recv_queue[msg]['ts_lastack'] >= self.recv_process_window:
+                    del self.recv_queue[msg]
+
         gevent.sleep(1)
         return None
 
     def sendmsgs(self):
         while True:
             if self.debug:
-                print("Top of sendmsgs: No. of Msgs in Queue: %s" % len(self.send_queue.keys()))
-
+                print("_______________________________________________________Send Queue: %s" % len(self.send_queue.keys()))
             queue = OrderedDict(self.send_queue)
-
             for msghash in queue.keys():
                 if self.debug:
                     print("processing: %s" % msghash)
                 curtime = int(time.time())
                 if (self.send_queue[msghash]['ack'] == False and self.send_queue[msghash]['require_ack'] == True) or self.send_queue[msghash]['last_send'] == 0:
                    if curtime - self.send_queue[msghash]['last_send'] > self.resend_delay:
-                        print("Sending %s" % msghash)
                         self.fr.send_raw(self.send_queue[msghash]['msg'])
                         self.send_queue[msghash]['last_send'] = curtime
+                        print("Sending %s - %s - Ack Required: %s" % (msghash, self.send_queue[msghash]['msg'], self.send_queue[msghash]['require_ack']))
                         if self.send_queue[msghash]['require_ack'] == False:
-                            if self.debug:
-                                print("^^^^^ Message %s sent, no ack required - removing from queue" % msghash)
-                                del self.send_queue[msghash]
+                            del self.send_queue[msghash]
                 elif self.send_queue[msghash]['ack'] == True:
-                    if self.debug:
-                        print("^^^^^ Message %s acked - removing from queue" % msghash)
                     del self.send_queue[msghash]
                 gevent.sleep(0.5)
             gevent.sleep(0.5)
@@ -85,8 +86,8 @@ class FarmQueue():
     def recvmsgs(self):
         while True:
             if self.debug:
-                pass
-                #print("Top of recvmsgs")
+                print("_______________________________________________________Recv Queue: %s" % len(self.recv_queue.keys()))
+            curtime = int(time.time())
             msg, snr = self.fr.recv_raw()
             if msg != "" and msg is not None:
                 msgar = msg.split("~")
@@ -98,7 +99,7 @@ class FarmQueue():
                         msgack = int(msgar[3])
                         msgstr = msgar[4]
                     except:
-                        print("Wonky message: %s" % msg)
+                        print("----- Message did not split into 5 parts: %s" % msg)
                         msgto = None
                     if msgto.lower() == self.myname.lower(): # If the dest address is the same as me, then accept the messages
                         if self.debug:
@@ -117,10 +118,13 @@ class FarmQueue():
                             if msghash in self.recv_queue: # We've already gotten this, so let's not re process it, but we will resend ack if needed
                                 if msgack == 1:
                                     self.sendack(msgfrom, msghash)
+                                    self.recv_queue[msghash]['ts_lastack'] = curtime
                             else:
-                                self.recv_queue[msghash] = {'from': msgfrom, 'msg': msg, 'processed': False}
+                                self.recv_queue[msghash] = {'from': msgfrom, 'ts_recv': curtime, 'ts_proc': 0, 'ts_lastack': 0, 'msg': msg}
                                 if msgack == 1:
                                     self.sendack(msgfrom, msghash)
+                                    self.recv_queue[msghash]['ts_lastack'] = curtime
+
                     else:
                         pass
                         #print("!!!>> Message not for me: %s vs. %s" % (msgto.lower(), self.myname.lower()))

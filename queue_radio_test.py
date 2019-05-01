@@ -72,7 +72,8 @@ def procmsg():
                 except:
                     print("<!<!< - Odd Message: %s" % msg)
             else:
-                print("***** - No Data")
+                pass
+                #print("***** - No Data")
             gevent.sleep(1)
 
         except KeyboardInterrupt:
@@ -92,7 +93,8 @@ def procmsg():
                     print(">>>>> Sending message from server to %s" % thissender)
                     fq.sendmsg(thissender, "A message from the server", require_ack)
                 else:
-                    print("***** No Senders yet - Server not sending message")
+                    pass
+                    #print("***** No Senders yet - Server not sending message")
 
             gevent.sleep(0.5)
         gevent.sleep(0.5)
