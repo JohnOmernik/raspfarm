@@ -59,7 +59,6 @@ class FarmRadio():
 
         watchdog_timeout = int((self.timeout * 1000)) - 500
         self.myname = socket.gethostname().lower()
-        
         print(self.send_cmd('mac pause', 1))
         time.sleep(0.1)
         print(self.send_cmd('radio set mod %s' % self.radio_mode, 1))
@@ -90,7 +89,15 @@ class FarmRadio():
         packet = None
         snr = None
         self.send_cmd('radio rx 0')
-        packet = self.ser.readline()
+        curwait = 0
+        while curwait <= self.timeout:
+            time.sleep(0.5)
+            packet = self.ser.readline()
+            if packet is not None:
+                break
+            else:
+                curwait += 0.5
+        #packet = self.ser.readline()
         snr = self.send_cmd("radio get snr")
         packet_text = ""
         data = packet.decode('UTF-8')
