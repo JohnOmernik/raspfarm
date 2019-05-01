@@ -44,9 +44,9 @@ class FarmQueue():
         self.myname = socket.gethostname().lower()
 
         if self.radio_conf['radio_serial_port']  == "spi":
-            self.fr = farmradio.FarmRadio(debug=self.debug, timeout=self.timeout)
+            self.fr = farmradio.FarmRadio(debug=self.debug, timeout=self.timeout, radio_conf=self.radio_conf)
         else:
-            self.fr = farmradio_usb.FarmRadio(debug=self.debug, timeout=self.timeout)
+            self.fr = farmradio_usb.FarmRadio(debug=self.debug, timeout=self.timeout, radio_conf=self.radio_conf)
 
     def getmsg(self):
         queue = OrderedDict(self.recv_queue)
