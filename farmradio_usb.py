@@ -91,10 +91,12 @@ class FarmRadio():
         snr = None
         self.send_cmd('radio rx 0')
         packet = self.ser.read_until('\r\n')
+        
         snr = self.send_cmd("radio get snr")
         packet_text = ""
         data = packet.decode('UTF-8')
         if data == "radio_err":
+            print(data)
             packet_text = None
         elif data.find("radio_rx ") == 0:
             mydata = data.replace("radio_rx ", "").strip()
@@ -107,6 +109,11 @@ class FarmRadio():
                 tpacket = b"decode_error"
                 packet_text = str(tpacket, "utf-8")
             self.prev_packet = packet_text
+        elif data is None:
+            print("None")
+        else:
+            print(data)
+
         return packet_text, snr
 
 
