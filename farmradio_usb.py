@@ -63,6 +63,7 @@ class FarmRadio():
         print(self.send_cmd('mac pause', 1))
         time.sleep(0.1)
         print(self.send_cmd('radio set mod %s' % self.radio_mode, 1))
+        print(self.send_cmd('radio set sync 12, 1))
         print(self.send_cmd('radio set freq %s' % int((self.radio_freq_mhz * 1000000)), 1))
         print(self.send_cmd('radio set pwr %s' % self.radio_tx_pwr, 1))
         print(self.send_cmd('radio set sf sf%s' % self.radio_spread_factor, 1))
