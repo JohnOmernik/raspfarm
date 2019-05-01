@@ -34,9 +34,9 @@ class FarmQueue():
     timeout = None
     debug = False
 
-    def __init__(self,  debug=False, timeout=1.0, resend_delay=5, recv_process_window=300, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
+    def __init__(self,  debug=False, timeout=1.0, resend_delay=5, recv_prune_window=300, radio_conf={"radio_freq_mhz": 915.5, "radio_tx_pwr": 20, "radio_serial_port": "spi", "radio_mode": "lora", "radio_spread_factor": 7, "radio_crc": False, "radio_cr": 5, "radio_bw": 125}):
         self.radio_conf = radio_conf
-        self.recv_prune_window = recv_process_window # Number of seconds to leave a processed message in recv queue
+        self.recv_prune_window = recv_prune_window # Number of seconds to leave a processed message  after the last ack in recv queue
         self.debug = debug
         self.timeout = timeout
         self.resend_delay = resend_delay
@@ -56,7 +56,7 @@ class FarmQueue():
                 gevent.sleep(1)
                 return self.recv_queue[msg]['msg']
             elif self.recv_queue[msg]['ts_proc'] > 0:
-                if curtime - self.recv_queue[msg]['ts_lastack'] >= self.recv_process_window:
+                if curtime - self.recv_queue[msg]['ts_lastack'] >= self.recv_prune_window:
                     del self.recv_queue[msg]
 
         gevent.sleep(1)
