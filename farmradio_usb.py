@@ -102,8 +102,8 @@ class FarmRadio():
         packet = None
         snr = None
         print(self.send_cmd('radio rx 0', 1))
-        packet = self.ser.read_until('\r\n')
-
+        time.sleep(0.3)
+        packet = self.ser.readline()
         snr = self.send_cmd("radio get snr")
         packet_text = ""
         data = packet.decode('UTF-8')
