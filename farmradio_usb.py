@@ -102,13 +102,13 @@ class FarmRadio():
     def recv_raw(self):
         packet = None
         snr = None
-        print(self.send_cmd('radio rx 0', 1))
+        self.send_cmd('radio rx 0')
+ 
         packet = self.ser.readline()
         snr = self.send_cmd("radio get snr")
         packet_text = ""
         data = packet.decode('UTF-8').strip()
         if data == "radio_err":
-            print(data)
             packet_text = None
         elif data.find("radio_rx ") == 0:
             mydata = data.replace("radio_rx ", "").strip()
@@ -121,8 +121,6 @@ class FarmRadio():
                 tpacket = b"decode_error"
                 packet_text = str(tpacket, "utf-8")
             self.prev_packet = packet_text
-        elif data is None:
-            print("None")
         else:
             print("Unknown: %s" % data)
 
