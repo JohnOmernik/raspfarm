@@ -106,7 +106,7 @@ class FarmRadio():
         packet = self.ser.readline()
         snr = self.send_cmd("radio get snr")
         packet_text = ""
-        data = packet.decode('UTF-8')
+        data = packet.decode('UTF-8').strip()
         if data == "radio_err":
             print(data)
             packet_text = None
