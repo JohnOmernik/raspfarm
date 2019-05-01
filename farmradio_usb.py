@@ -86,7 +86,7 @@ class FarmRadio():
         retval = self.ser.readline().decode('UTF-8').replace("\r\n", "")
         if btx == False:
             pass
-        else
+        else:
             if retval == "ok":
                 retval = self.ser.readline().decode('UTF-8').replace("\r\n", "")
             elif retval == "busy":
